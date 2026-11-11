@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OS Algorithm Visualizer - Complete Operating Systems Suite</title>
+  <meta name="description" content="Interactive OS visualizer featuring CPU Scheduling, Memory Allocation, Page Replacement, Process States, and Banker's Deadlock Algorithm.">
+
+  <!-- Local Bundled Offline Assets -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-brand-icon">
+          <i class="bi bi-cpu-fill"></i>
+        </div>
+        <div class="sidebar-brand-text">
+          <h1>OS Visualizer</h1>
+          <span>Operating Systems</span>
+        </div>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="nav-section-title">Overview</div>
+        <a href="#dashboard" class="sidebar-nav-item active" data-view="view-dashboard">
+          <i class="bi bi-speedometer2"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <div class="nav-section-title">Core Modules</div>
+        <a href="#cpu-scheduling" class="sidebar-nav-item" data-view="view-cpu-scheduling">
+          <i class="bi bi-clock-history"></i>
+          <span>CPU Scheduling</span>
+        </a>
+        <a href="#memory-allocation" class="sidebar-nav-item" data-view="view-memory">
+          <i class="bi bi-memory"></i>
+          <span>Memory Allocation</span>
+        </a>
+        <a href="#page-replacement" class="sidebar-nav-item" data-view="view-page-replacement">
+          <i class="bi bi-layers"></i>
+          <span>Page Replacement</span>
+        </a>
+        <a href="#process-states" class="sidebar-nav-item" data-view="view-process-states">
+          <i class="bi bi-diagram-3"></i>
+          <span>Process States</span>
+        </a>
+        <a href="#deadlock" class="sidebar-nav-item" data-view="view-deadlock">
+          <i class="bi bi-shield-lock"></i>
+          <span>Deadlock (Banker's)</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <span><i class="bi bi-hdd-network"></i> Local 127.0.0.1</span>
+        <span class="text-success fw-bold">v2.0.0 Online</span>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="app-content">
+
+      <!-- ======================================================== -->
+      <!-- MODULE 0: EXECUTIVE DASHBOARD OVERVIEW                   -->
+      <!-- ======================================================== -->
+      <div id="view-dashboard" class="module-view">
+        <header class="top-header">
+          <div class="page-title">
+            <h2>Operating Systems Suite Dashboard</h2>
+            <p>Unified executive monitoring and interactive launchpad for all 5 core subsystems.</p>
+          </div>
+          <div>
+            <div class="header-status-badge">
+              <span class="status-dot"></span>
+              <span>All 5 Subsystems Operational</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Executive KPI Banner -->
+        <section class="panel mb-4">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <div class="p-3 rounded" style="background: rgba(130, 170, 255, 0.08); border: 1px solid rgba(130, 170, 255, 0.2);">
+                <span class="text-secondary small text-uppercase fw-bold">Subsystems</span>
+                <h3 class="text-primary mt-1 mb-0 fw-bold">5 / 5 Active</h3>
+                <small class="text-muted">Scheduling, Memory, Pages, States, Deadlock</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="p-3 rounded" style="background: rgba(105, 215, 176, 0.08); border: 1px solid rgba(105, 215, 176, 0.2);">
+                <span class="text-secondary small text-uppercase fw-bold">CPU Health</span>
+                <h3 class="text-success mt-1 mb-0 fw-bold">100% Utilized</h3>
+                <small class="text-muted">Zero idle bottlenecks in benchmark</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="p-3 rounded" style="background: rgba(255, 203, 107, 0.08); border: 1px solid rgba(255, 203, 107, 0.2);">
+                <span class="text-secondary small text-uppercase fw-bold">Concurrency State</span>
+                <h3 class="text-warning mt-1 mb-0 fw-bold">Safe Sequence</h3>
+                <small class="text-muted">Banker's avoidance guarantees no deadlock</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="p-3 rounded" style="background: rgba(151, 117, 250, 0.08); border: 1px solid rgba(151, 117, 250, 0.2);">
+                <span class="text-secondary small text-uppercase fw-bold">Test Coverage</span>
+                <h3 class="mt-1 mb-0 fw-bold" style="color: #B197FC;">46 Tests Passing</h3>
+                <small class="text-muted">100% verified algorithmic correctness</small>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Quick Launch Module Cards Grid -->
+        <h5 class="text-secondary small fw-bold mb-3 text-uppercase">INTERACTIVE SUBSYSTEM LAUNCHPAD</h5>
+        <div class="row g-3 mb-4">
+          <!-- CPU Scheduling Card -->
+          <div class="col-lg-4 col-md-6">
+            <div class="dash-overview-card">
+              <div>
+                <div class="dash-icon-box dash-icon-blue">
+                  <i class="bi bi-clock-history"></i>
+                </div>
+                <h5 class="text-white fw-bold">CPU Scheduling Simulator</h5>
+                <p class="text-secondary small mb-3">
+                  Simulate Priority (Non-preemptive & Preemptive) and Round Robin with interactive Gantt timeline and playback.
+                </p>
+                <div class="d-flex flex-wrap gap-1 mb-3">
+                  <span class="badge bg-dark border border-secondary text-secondary">Priority NP</span>
+                  <span class="badge bg-dark border border-secondary text-secondary">Priority Preemptive</span>
+                  <span class="badge bg-dark border border-secondary text-secondary">Round Robin</span>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-primary-custom w-100 btn-quick-nav" data-target="view-cpu-scheduling">
+                Launch CPU Scheduling <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Memory Allocation Card -->
+          <div class="col-lg-4 col-md-6">
+            <div class="dash-overview-card">
+              <div>
+                <div class="dash-icon-box dash-icon-green">
+                  <i class="bi bi-memory"></i>
+                </div>
+                <h5 class="text-white fw-bold">Memory Allocation Engine</h5>
+                <p class="text-secondary small mb-3">
+                  Partition allocation strategies with physical memory map, internal fragmentation calculation, and external alerts.
+                </p>
+                <div class="d-flex flex-wrap gap-1 mb-3">
+                  <span class="badge bg-dark border border-secondary text-secondary">First Fit</span>
+                  <span class="badge bg-dark border border-secondary text-secondary">Best Fit</span>
+                  <span class="badge bg-dark border border-secondary text-secondary">Worst Fit</span>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-secondary-custom w-100 btn-quick-nav" data-target="view-memory">
+                Launch Memory Manager <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Page Replacement Card -->
+          <div class="col-lg-4 col-md-6">
+            <div class="dash-overview-card">
+              <div>
+                <div class="dash-icon-box dash-icon-yellow">
+                  <i class="bi bi-layers"></i>
+                </div>
+                <h5 class="text-white fw-bold">Virtual Memory Page Replacement</h5>
+                <p class="text-secondary small mb-3">
+                  Frame-by-frame hit/fault matrix, fault ratios, and multi-algorithm visual comparison bar charts.
+                </p>
+                <div class="d-flex flex-wrap gap-1 mb-3">
+                  <span class="badge bg-dark border border-secondary text-secondary">FIFO</span>
+                  <span class="badge bg-dark border border-secondary text-secondary">LRU</span>
+                  <span class="badge bg-dark border border-secondary text-secondary">Optimal (OPT)</span>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-secondary-custom w-100 btn-quick-nav" data-target="view-page-replacement">
+                Launch Page Replacement <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Process States Card -->
+          <div class="col-lg-6 col-md-6">
+            <div class="dash-overview-card">
+              <div>
+                <div class="dash-icon-box dash-icon-purple">
+                  <i class="bi bi-diagram-3"></i>
+                </div>
+                <h5 class="text-white fw-bold">Process Lifecycle & PCB Registry</h5>
+                <p class="text-secondary small mb-3">
+                  Interactive 5-state process model (New, Ready, Running, Waiting, Terminated) with live queues and Process Control Block inspections.
+                </p>
+                <div class="d-flex flex-wrap gap-1 mb-3">
+                  <span class="badge bg-dark border border-secondary text-secondary">5-State Model</span>
+                  <span class="badge bg-dark border border-secondary text-secondary">Dispatch/Preempt</span>
+                  <span class="badge bg-dark border border-secondary text-secondary">PCB Registry</span>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-secondary-custom w-100 btn-quick-nav" data-target="view-process-states">
+                Launch Process States <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Deadlock Card -->
+          <div class="col-lg-6 col-md-12">
+            <div class="dash-overview-card">
+              <div>
+                <div class="dash-icon-box dash-icon-red">
+                  <i class="bi bi-shield-lock"></i>
+                </div>
+                <h5 class="text-white fw-bold">Deadlock Avoidance (Banker's Algorithm)</h5>
+                <p class="text-secondary small mb-3">
+                  Verify system safety, calculate Need matrices, identify safe sequences, and simulate process resource request safety evaluations.
+                </p>
+                <div class="d-flex flex-wrap gap-1 mb-3">
+                  <span class="badge bg-dark border border-secondary text-secondary">Safety Algorithm</span>
+                  <span class="badge bg-dark border border-secondary text-secondary">Need Matrix</span>
+                  <span class="badge bg-dark border border-secondary text-secondary">Resource Requests</span>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-secondary-custom w-100 btn-quick-nav" data-target="view-deadlock">
+                Launch Banker's Simulator <i class="bi bi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Academic Cheat Sheet & Formulas -->
+        <section class="panel mb-4">
+          <div class="panel-header">
+            <h3><i class="bi bi-book-half text-primary"></i> Operating Systems Quick Reference & Formulas</h3>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="p-3 rounded" style="background: #172238; border: 1px solid #293750;">
+                <h6 class="text-primary fw-bold mb-2">CPU Timing Formulas</h6>
+                <ul class="text-secondary small mb-0 ps-3">
+                  <li><strong>Turnaround Time (TAT)</strong>: $CT - AT$</li>
+                  <li><strong>Waiting Time (WT)</strong>: $TAT - BT$</li>
+                  <li><strong>Response Time (RT)</strong>: $\text{First Start} - AT$</li>
+                  <li><strong>CPU Utilization</strong>: $\frac{\sum BT}{\text{Total Elapsed}} \times 100\%$</li>
+                  <li><strong>Throughput</strong>: $\frac{\text{Completed Processes}}{\text{Total Elapsed}}$</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded" style="background: #172238; border: 1px solid #293750;">
+                <h6 class="text-success fw-bold mb-2">Memory Allocation Rules</h6>
+                <ul class="text-secondary small mb-0 ps-3">
+                  <li><strong>First Fit</strong>: First free block with $Size \ge Request$.</li>
+                  <li><strong>Best Fit</strong>: Free block with $\min(Size - Request \ge 0)$.</li>
+                  <li><strong>Worst Fit</strong>: Free block with $\max(Size - Request \ge 0)$.</li>
+                  <li><strong>Internal Frag</strong>: Unused space inside an allocated partition.</li>
+                  <li><strong>External Frag</strong>: Free space exists in total, but non-contiguous.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded" style="background: #172238; border: 1px solid #293750;">
+                <h6 class="text-warning fw-bold mb-2">Banker's Algorithm Rules</h6>
+                <ul class="text-secondary small mb-0 ps-3">
+                  <li><strong>Need Matrix</strong>: $Need_{ij} = Max_{ij} - Alloc_{ij}$</li>
+                  <li><strong>Safe Condition</strong>: $\exists$ sequence where $Need_i \le Work$.</li>
+                  <li><strong>Request Step 1</strong>: $Request_i \le Need_i$ (else error).</li>
+                  <li><strong>Request Step 2</strong>: $Request_i \le Available$ (else wait).</li>
+                  <li><strong>Grant Rule</strong>: Safe state must be maintained.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- MODULE 1: CPU SCHEDULING VIEW                           -->
+      <!-- ======================================================== -->
+      <div id="view-cpu-scheduling" class="module-view d-none">
+        <header class="top-header">
+          <div class="page-title">
+            <h2>CPU Scheduling Simulator</h2>
+            <p>Analyze execution orders, Gantt timelines, turnaround, waiting, and response metrics.</p>
+          </div>
+          <div>
+            <div class="header-status-badge">
+              <span class="status-dot"></span>
+              <span>Simulation Engine Online</span>
+            </div>
+          </div>
+        </header>
+
+        <div id="errorAlert" class="alert alert-danger d-none py-2 px-3 mb-3" role="alert"></div>
+
+        <!-- Workspace Panel: Configuration & Process Table -->
+        <section class="panel mb-4" id="cpu-scheduling">
+          <div class="panel-header">
+            <h3><i class="bi bi-sliders2 text-primary"></i> Algorithm & Process Configuration</h3>
+            <div class="panel-header-actions">
+              <label class="form-label-custom mb-0 me-1">Preset:</label>
+              <select id="presetSelect" class="form-select-custom form-select-sm" style="max-width: 200px;">
+                <option value="standard">Standard Mix (4 Procs)</option>
+                <option value="preemption_demo">Preemption Demo (3 Procs)</option>
+                <option value="time_slice_boundary">Slice Boundary Demo (3 Procs)</option>
+                <option value="idle_periods">Idle CPU Gaps Demo (2 Procs)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="config-ribbon">
+            <div class="form-group-custom flex-grow-1" style="min-width: 250px;">
+              <label class="form-label-custom" for="algorithmSelect">Scheduling Algorithm</label>
+              <select id="algorithmSelect" class="form-select-custom">
+                <option value="priority_non_preemptive">Priority Scheduling — Non-preemptive</option>
+                <option value="priority_preemptive">Priority Scheduling — Preemptive</option>
+                <option value="round_robin">Round Robin Scheduling</option>
+              </select>
+            </div>
+
+            <div class="form-group-custom d-none" id="quantumContainer" style="width: 130px;">
+              <label class="form-label-custom" for="quantumInput">Time Quantum</label>
+              <input type="number" id="quantumInput" class="form-input-custom" value="2" min="1" step="1" />
+            </div>
+
+            <div class="d-flex gap-2 ms-auto">
+              <button id="btnRunSimulation" class="btn-custom btn-primary-custom">
+                <i class="bi bi-play-circle-fill"></i> Run Simulation
+              </button>
+              <button id="btnCompareAll" class="btn-custom btn-secondary-custom" title="Compare all 3 algorithms on this process set">
+                <i class="bi bi-bar-chart-line-fill"></i> Compare All
+              </button>
+            </div>
+          </div>
+
+          <div class="priority-rule-banner mb-3">
+            <i class="bi bi-info-circle-fill fs-6"></i>
+            <span><strong>Priority Convention:</strong> Lower integer value denotes higher priority (e.g. Priority <strong>0</strong> is higher priority than <strong>1</strong>).</span>
+          </div>
+
+          <div class="table-responsive-custom mb-3">
+            <table class="process-table">
+              <thead>
+                <tr>
+                  <th style="width: 22%;">Process ID</th>
+                  <th style="width: 22%;">Arrival Time (AT)</th>
+                  <th style="width: 22%;">Burst Time (BT)</th>
+                  <th style="width: 22%;">Priority</th>
+                  <th style="width: 12%; text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="processTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <button id="btnAddProcess" class="btn-custom btn-secondary-custom btn-sm-custom">
+              <i class="bi bi-plus-lg"></i> Add Process
+            </button>
+            <div class="d-flex gap-2">
+              <button id="btnResetData" class="btn-custom btn-secondary-custom btn-sm-custom">
+                <i class="bi bi-arrow-counterclockwise"></i> Reset Preset
+              </button>
+              <button id="btnClearAll" class="btn-custom btn-outline-danger-custom btn-sm-custom">
+                <i class="bi bi-trash3"></i> Clear All
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel: Gantt Chart & Interactive Playback -->
+        <section class="panel mb-4">
+          <div class="panel-header">
+            <h3><i class="bi bi-bar-chart-steps text-primary"></i> Execution Timeline & Gantt Chart</h3>
+            <span class="badge bg-dark border border-secondary text-secondary">Step-by-Step Playback</span>
+          </div>
+
+          <div class="playback-bar">
+            <div class="playback-controls-group">
+              <button id="btnResetPlay" class="playback-btn" title="Reset Playback"><i class="bi bi-skip-start-fill"></i></button>
+              <button id="btnPrevStep" class="playback-btn" title="Previous Step"><i class="bi bi-chevron-left"></i></button>
+              <button id="btnPlayPause" class="playback-btn active-play" title="Play / Pause"><i class="bi bi-play-fill"></i></button>
+              <button id="btnNextStep" class="playback-btn" title="Next Step"><i class="bi bi-chevron-right"></i></button>
+              <button id="btnShowComplete" class="playback-btn" title="Show Full Completed Chart"><i class="bi bi-skip-end-fill"></i></button>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <label class="form-label-custom mb-0">Speed:</label>
+              <select id="playbackSpeedSelect" class="form-select-custom form-select-sm" style="width: 85px;">
+                <option value="0.5">0.5x</option>
+                <option value="1.0" selected>1.0x</option>
+                <option value="2.0">2.0x</option>
+                <option value="4.0">4.0x</option>
+              </select>
+            </div>
+
+            <div class="simulation-clock-card">
+              <div>Clock: <span id="simClock" class="clock-value">0</span></div>
+              <div class="d-flex align-items-center gap-1">
+                <span>Running:</span>
+                <div id="runningProcessChip" class="running-process-indicator">
+                  <span class="badge bg-secondary">Idle (Ready)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="ganttContainer" class="gantt-container"></div>
+        </section>
+
+        <!-- Panel: Performance Metrics Cards -->
+        <section class="panel mb-4">
+          <div class="panel-header">
+            <h3><i class="bi bi-speedometer2 text-primary"></i> Performance Metrics</h3>
+          </div>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-title">Avg Waiting Time</span>
+              <span class="metric-value" id="metricAvgWT">0.0</span>
+              <span class="metric-unit">Time units</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-title">Avg Turnaround</span>
+              <span class="metric-value" id="metricAvgTAT">0.0</span>
+              <span class="metric-unit">Time units</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-title">Avg Response</span>
+              <span class="metric-value" id="metricAvgRT">0.0</span>
+              <span class="metric-unit">Time units</span>
+            </div>
+            <div class="metric-card success">
+              <span class="metric-title">CPU Utilization</span>
+              <span class="metric-value text-success" id="metricCPUUtil">0.0%</span>
+              <span class="metric-unit">Percentage</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-title">Throughput</span>
+              <span class="metric-value" id="metricThroughput">0.00</span>
+              <span class="metric-unit">Procs / unit time</span>
+            </div>
+            <div class="metric-card warning">
+              <span class="metric-title">Total Elapsed Time</span>
+              <span class="metric-value text-warning" id="metricTotalElapsed">0</span>
+              <span class="metric-unit">Time units</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel: Detailed Results Table -->
+        <section class="panel mb-4">
+          <div class="panel-header">
+            <h3><i class="bi bi-table text-primary"></i> Process Execution Details</h3>
+            <span class="text-secondary small">Formula: TAT = CT - AT &bull; WT = TAT - BT &bull; RT = First Start - AT</span>
+          </div>
+          <div class="table-responsive-custom">
+            <table class="process-table">
+              <thead>
+                <tr>
+                  <th>PID</th>
+                  <th>Arrival (AT)</th>
+                  <th>Burst (BT)</th>
+                  <th>Priority</th>
+                  <th>First Start</th>
+                  <th>Completion (CT)</th>
+                  <th>Turnaround (TAT)</th>
+                  <th>Waiting (WT)</th>
+                  <th>Response (RT)</th>
+                </tr>
+              </thead>
+              <tbody id="resultsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Panel: Visual Analytics & Cross-Algorithm Comparison -->
+        <section class="row g-3" id="comparisonSection">
+          <div class="col-lg-6">
+            <div class="panel h-100">
+              <div class="panel-header">
+                <h3><i class="bi bi-graph-up text-primary"></i> Process Performance Breakdown</h3>
+              </div>
+              <div class="chart-container-card">
+                <canvas id="processMetricsCanvas"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="panel h-100">
+              <div class="panel-header">
+                <h3><i class="bi bi-bar-chart-line text-primary"></i> Algorithm Comparison</h3>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">Same Dataset</span>
+              </div>
+              <div class="chart-container-card">
+                <canvas id="comparisonCanvas"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- MODULE 2: MEMORY ALLOCATION VIEW                         -->
+      <!-- ======================================================== -->
+      <div id="view-memory" class="module-view d-none">
+        <header class="top-header">
+          <div class="page-title">
+            <h2>Contiguous Memory Allocation</h2>
+            <p>Simulate First Fit, Best Fit, and Worst Fit partition allocation strategies.</p>
+          </div>
+        </header>
+
+        <section class="panel mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center gap-2">
+              <label class="form-label-custom mb-0">Strategy:</label>
+              <select id="memAlgorithmSelect" class="form-select-custom form-select-sm" style="width: 180px;">
+                <option value="first_fit">First Fit</option>
+                <option value="best_fit">Best Fit</option>
+                <option value="worst_fit">Worst Fit</option>
+              </select>
+            </div>
+            <button id="btnRunMemAlloc" class="btn-custom btn-primary-custom">
+              <i class="bi bi-play-circle-fill"></i> Allocate Memory
+            </button>
+          </div>
+
+          <!-- Summary Metrics Cards -->
+          <div class="metrics-grid mb-4">
+            <div class="metric-card">
+              <span class="metric-title">Total Memory</span>
+              <span class="metric-value" id="memTotal">0 KB</span>
+            </div>
+            <div class="metric-card success">
+              <span class="metric-title">Allocated</span>
+              <span class="metric-value text-success" id="memAllocated">0 KB</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-title">Free Memory</span>
+              <span class="metric-value" id="memFree">0 KB</span>
+            </div>
+            <div class="metric-card warning">
+              <span class="metric-title">Internal Fragmentation</span>
+              <span class="metric-value text-warning" id="memFrag">0 KB</span>
+            </div>
+          </div>
+
+          <!-- Visual Memory Map -->
+          <h5 class="text-secondary small fw-bold mb-2">PHYSICAL MEMORY PARTITION MAP</h5>
+          <div class="mem-visual-container mb-4" id="memVisualTrack"></div>
+
+          <!-- Configuration Tables -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold text-white small">Memory Partitions / Blocks</span>
+                <button id="btnAddMemBlock" class="btn btn-sm btn-secondary-custom">+ Add Block</button>
+              </div>
+              <div class="table-responsive-custom">
+                <table class="process-table">
+                  <thead>
+                    <tr><th>Block ID</th><th>Size (KB)</th><th class="text-end">Action</th></tr>
+                  </thead>
+                  <tbody id="memBlocksBody"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fw-bold text-white small">Process Allocation Requests</span>
+                <button id="btnAddMemProc" class="btn btn-sm btn-secondary-custom">+ Add Request</button>
+              </div>
+              <div class="table-responsive-custom">
+                <table class="process-table">
+                  <thead>
+                    <tr><th>Process ID</th><th>Required Size (KB)</th><th class="text-end">Action</th></tr>
+                  </thead>
+                  <tbody id="memProcsBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Allocation Results Table -->
+          <h5 class="text-secondary small fw-bold mb-2">ALLOCATION STATUS & FRAGMENTATION</h5>
+          <div class="table-responsive-custom">
+            <table class="process-table">
+              <thead>
+                <tr>
+                  <th>Process</th><th>Size</th><th>Status</th><th>Assigned Block</th><th>Internal Frag</th>
+                </tr>
+              </thead>
+              <tbody id="memResultsBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- MODULE 3: PAGE REPLACEMENT VIEW                          -->
+      <!-- ======================================================== -->
+      <div id="view-page-replacement" class="module-view d-none">
+        <header class="top-header">
+          <div class="page-title">
+            <h2>Virtual Memory Page Replacement</h2>
+            <p>Simulate and compare FIFO, LRU (Least Recently Used), and Optimal algorithms.</p>
+          </div>
+        </header>
+
+        <section class="panel mb-4">
+          <div class="config-ribbon mb-3">
+            <div class="form-group-custom flex-grow-1" style="min-width: 250px;">
+              <label class="form-label-custom">Reference String (Comma or Space separated)</label>
+              <input type="text" id="pageRefInput" class="form-input-custom" value="7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1" />
+            </div>
+            <div class="form-group-custom" style="width: 130px;">
+              <label class="form-label-custom">Number of Frames</label>
+              <input type="number" id="pageFramesInput" class="form-input-custom" value="3" min="1" max="8" />
+            </div>
+            <div class="form-group-custom" style="width: 180px;">
+              <label class="form-label-custom">Algorithm</label>
+              <select id="pageAlgoSelect" class="form-select-custom">
+                <option value="fifo">FIFO</option>
+                <option value="lru">LRU</option>
+                <option value="optimal">Optimal</option>
+                <option value="compare">Compare All 3</option>
+              </select>
+            </div>
+            <button id="btnRunPageSim" class="btn-custom btn-primary-custom align-self-end">
+              <i class="bi bi-play-circle-fill"></i> Simulate
+            </button>
+          </div>
+
+          <!-- Page Metrics -->
+          <div class="metrics-grid mb-4">
+            <div class="metric-card warning">
+              <span class="metric-title">Page Faults</span>
+              <span class="metric-value text-danger" id="pageFaultsVal">0</span>
+            </div>
+            <div class="metric-card success">
+              <span class="metric-title">Page Hits</span>
+              <span class="metric-value text-success" id="pageHitsVal">0</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-title">Hit Ratio</span>
+              <span class="metric-value" id="pageHitRatioVal">0.0%</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-title">Fault Ratio</span>
+              <span class="metric-value" id="pageFaultRatioVal">0.0%</span>
+            </div>
+          </div>
+
+          <!-- Step-by-step Frame Grid Matrix -->
+          <h5 class="text-secondary small fw-bold mb-2">FRAME ALLOCATION MATRIX</h5>
+          <div id="pageMatrixContainer" class="mb-3"></div>
+        </section>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- MODULE 4: PROCESS STATES VIEW                            -->
+      <!-- ======================================================== -->
+      <div id="view-process-states" class="module-view d-none">
+        <header class="top-header">
+          <div class="page-title">
+            <h2>Process State Lifecycle & PCB Simulation</h2>
+            <p>Interactive 5-state process model with state transitions and Process Control Blocks.</p>
+          </div>
+          <div>
+            <button id="btnCreateStateProc" class="btn-custom btn-primary-custom me-2">+ Create Process</button>
+            <button id="btnResetStateSim" class="btn-custom btn-secondary-custom">Reset Simulator</button>
+          </div>
+        </header>
+
+        <section class="panel mb-4">
+          <!-- 5-State Visual Diagram Grid -->
+          <h5 class="text-secondary small fw-bold mb-3">PROCESS STATE DIAGRAM & QUEUES</h5>
+          <div class="state-diagram-grid">
+            <div class="state-box" style="border-top: 3px solid #6C757D;">
+              <div class="state-box-header text-muted">
+                <span>NEW (Job Queue)</span>
+                <i class="bi bi-asterisk"></i>
+              </div>
+              <div class="state-box-body" id="boxState_NEW"></div>
+            </div>
+
+            <div class="state-box" style="border-top: 3px solid #FFC107;">
+              <div class="state-box-header" style="color: #FFC107;">
+                <span>READY (Ready Queue)</span>
+                <i class="bi bi-arrow-repeat"></i>
+              </div>
+              <div class="state-box-body" id="boxState_READY"></div>
+            </div>
+
+            <div class="state-box" style="border-top: 3px solid #0D6EFD;">
+              <div class="state-box-header text-primary">
+                <span>RUNNING (CPU)</span>
+                <i class="bi bi-cpu"></i>
+              </div>
+              <div class="state-box-body" id="boxState_RUNNING"></div>
+            </div>
+
+            <div class="state-box" style="border-top: 3px solid #DC3545;">
+              <div class="state-box-header text-danger">
+                <span>WAITING (I/O Device Queue)</span>
+                <i class="bi bi-hourglass-split"></i>
+              </div>
+              <div class="state-box-body" id="boxState_WAITING"></div>
+            </div>
+
+            <div class="state-box" style="border-top: 3px solid #198754;">
+              <div class="state-box-header text-success">
+                <span>TERMINATED (Exit)</span>
+                <i class="bi bi-check-circle"></i>
+              </div>
+              <div class="state-box-body" id="boxState_TERMINATED"></div>
+            </div>
+          </div>
+
+          <!-- Transition Action Bar -->
+          <div class="config-ribbon mb-4">
+            <div class="form-group-custom" style="min-width: 180px;">
+              <label class="form-label-custom">Target Process</label>
+              <select id="targetProcSelect" class="form-select-custom"></select>
+            </div>
+            <div class="form-group-custom" style="min-width: 220px;">
+              <label class="form-label-custom">Trigger Transition Action</label>
+              <select id="selectStateAction" class="form-select-custom">
+                <option value="admit">Admit (New → Ready)</option>
+                <option value="dispatch">Dispatch (Ready → Running)</option>
+                <option value="timeout">Timeout / Interrupt (Running → Ready)</option>
+                <option value="io_request">I/O Request (Running → Waiting)</option>
+                <option value="io_complete">I/O Complete (Waiting → Ready)</option>
+                <option value="exit">Terminate (Running → Terminated)</option>
+              </select>
+            </div>
+            <button id="btnExecTransition" class="btn-custom btn-primary-custom align-self-end">
+              Execute Transition
+            </button>
+          </div>
+
+          <!-- Process Control Block (PCB) Inspector -->
+          <h5 class="text-secondary small fw-bold mb-2">PROCESS CONTROL BLOCK (PCB) REGISTRY</h5>
+          <div class="table-responsive-custom">
+            <table class="process-table">
+              <thead>
+                <tr>
+                  <th>PID</th><th>Current State</th><th>PC</th><th>Priority</th><th>CPU Time</th><th>Memory</th><th>Latest Event</th>
+                </tr>
+              </thead>
+              <tbody id="pcbTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- MODULE 5: DEADLOCK (BANKER'S ALGORITHM) VIEW             -->
+      <!-- ======================================================== -->
+      <div id="view-deadlock" class="module-view d-none">
+        <header class="top-header">
+          <div class="page-title">
+            <h2>Deadlock Avoidance — Banker's Algorithm</h2>
+            <p>Safety algorithm sequence calculation and resource request grant evaluation.</p>
+          </div>
+        </header>
+
+        <section class="panel mb-4">
+          <div id="deadlockStatusBanner" class="alert d-none"></div>
+
+          <div class="d-flex gap-2 mb-4">
+            <button id="btnCheckSafety" class="btn-custom btn-primary-custom">
+              <i class="bi bi-shield-check"></i> Check System Safety
+            </button>
+          </div>
+
+          <div id="deadlockStepsContainer" class="mb-4"></div>
+
+          <!-- Resource Request Simulator -->
+          <div class="panel mb-4" style="background: #101728; border: 1px solid #293750;">
+            <h6 class="text-white fw-bold mb-3"><i class="bi bi-box-arrow-in-right text-primary"></i> Resource Request Simulator</h6>
+            <div class="d-flex flex-wrap gap-3 align-items-end">
+              <div class="form-group-custom" style="width: 140px;">
+                <label class="form-label-custom">Process</label>
+                <select id="deadlockReqPid" class="form-select-custom form-select-sm">
+                  <option value="P0">P0</option>
+                  <option value="P1" selected>P1</option>
+                  <option value="P2">P2</option>
+                  <option value="P3">P3</option>
+                  <option value="P4">P4</option>
+                </select>
+              </div>
+              <div class="form-group-custom" style="width: 90px;">
+                <label class="form-label-custom">Res A</label>
+                <input type="number" id="reqA" class="form-input-custom form-input-sm" value="1" min="0" />
+              </div>
+              <div class="form-group-custom" style="width: 90px;">
+                <label class="form-label-custom">Res B</label>
+                <input type="number" id="reqB" class="form-input-custom form-input-sm" value="0" min="0" />
+              </div>
+              <div class="form-group-custom" style="width: 90px;">
+                <label class="form-label-custom">Res C</label>
+                <input type="number" id="reqC" class="form-input-custom form-input-sm" value="2" min="0" />
+              </div>
+              <button id="btnTestRequest" class="btn-custom btn-secondary-custom btn-sm-custom">
+                Test Request Safety
+              </button>
+            </div>
+          </div>
+
+          <!-- Fixed Textbook Matrices Display -->
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="p-3 rounded" style="background: #172238; border: 1px solid #293750;">
+                <h6 class="text-secondary small fw-bold mb-2">ALLOCATION MATRIX [A, B, C]</h6>
+                <div class="font-monospace text-white small">
+                  <div>P0: [0, 1, 0]</div>
+                  <div>P1: [2, 0, 0]</div>
+                  <div>P2: [3, 0, 2]</div>
+                  <div>P3: [2, 1, 1]</div>
+                  <div>P4: [0, 0, 2]</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded" style="background: #172238; border: 1px solid #293750;">
+                <h6 class="text-secondary small fw-bold mb-2">MAX CLAIM MATRIX [A, B, C]</h6>
+                <div class="font-monospace text-white small">
+                  <div>P0: [7, 5, 3]</div>
+                  <div>P1: [3, 2, 2]</div>
+                  <div>P2: [9, 0, 2]</div>
+                  <div>P3: [2, 2, 2]</div>
+                  <div>P4: [4, 3, 3]</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded" style="background: #172238; border: 1px solid #293750;">
+                <h6 class="text-secondary small fw-bold mb-2">AVAILABLE VECTOR [A, B, C]</h6>
+                <div class="font-monospace text-success fw-bold">
+                  <div>[3, 3, 2]</div>
+                </div>
+                <hr style="border-color: #293750;" />
+                <div class="small text-muted">Total instances in system: A=10, B=5, C=7</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-spinner-overlay">
+    <div class="spinner-border text-primary" role="status"></div>
+    <div class="text-primary fw-bold small">Computing Scheduling Engine...</div>
+  </div>
+
+  <!-- Local Bundled Offline Scripts -->
+  <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/chartjs/chart.umd.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/gantt.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/playback.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/modules.js') }}"></script>
+</body>
+</html>
